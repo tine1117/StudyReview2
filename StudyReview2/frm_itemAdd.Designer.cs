@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             toolStrip1 = new ToolStrip();
             txt_selectItem = new ToolStripLabel();
             toolStripSeparator1 = new ToolStripSeparator();
@@ -39,6 +40,8 @@
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
             columnHeader6 = new ColumnHeader();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            deleteToolStripMenuItem = new ToolStripMenuItem();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             txt_image = new TextBox();
@@ -60,6 +63,7 @@
             btn_cancle = new Button();
             txt_checkItem = new Label();
             toolStrip1.SuspendLayout();
+            contextMenuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -97,6 +101,7 @@
             // 
             listView.CheckBoxes = true;
             listView.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
+            listView.ContextMenuStrip = contextMenuStrip1;
             listView.FullRowSelect = true;
             listView.GridLines = true;
             listView.Location = new Point(6, 29);
@@ -122,6 +127,21 @@
             // 
             columnHeader3.Text = "Title";
             columnHeader3.Width = 300;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { deleteToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(181, 48);
+            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
+            contextMenuStrip1.Click += contextMenuStrip1_Click;
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new Size(180, 22);
+            deleteToolStripMenuItem.Text = "Delete";
+            deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
             // 
             // tabControl1
             // 
@@ -348,6 +368,7 @@
             Load += frm_itemAdd_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
+            contextMenuStrip1.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
@@ -394,5 +415,7 @@
         private ColumnHeader columnHeader4;
         private ColumnHeader columnHeader5;
         private ColumnHeader columnHeader6;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

@@ -265,7 +265,7 @@ namespace StudyReview2
             try
             {
                 var exisitQuestions = LoadQuestionsFromJson(JSON_PATH);
-                
+
                 if (CHECK_ITEM < 0 || CHECK_ITEM >= exisitQuestions.Count)
                 {
                     MessageBox.Show("수정할 항목을 찾을 수 없습니다.", "StudyReview 2", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -622,6 +622,48 @@ namespace StudyReview2
         {
             frm_start frm = new frm_start();
             frm.Show();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void contextMenuStrip1_Click(object sender, EventArgs e)
+        {
+
+
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /* 리스트 아이템 삭제 */
+            if (listView.CheckedItems.Count == 0)
+            {
+                //삭제 아이템 없음
+                return;
+            }
+            if (MessageBox.Show(
+                $"{listView.CheckedItems.Count}개 항목을 삭제하시겠습니까?", "StudyReview 2",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.Yes) { return;  }
+
+            var questions = LoadQuestionsFromJson(JSON_PATH);
+            var listDelete = listView
+            .CheckedItems
+            .Cast<ListViewItem>()
+            .Select(item => item.Index)
+            .OrderByDescending(i => i)
+            .ToList();
+
+            foreach (int i in listDelete)
+            {
+                if (i >= 0 && i < questions.Count)
+                    questions.RemoveAt(i);
+            }
+
+            SaveQuestionsToJson(JSON_PATH, questions);
+            eventReset();
         }
     }
 }
