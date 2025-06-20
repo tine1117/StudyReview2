@@ -278,7 +278,7 @@ namespace StudyReview2
                 }
                 else
                 {
-                    isCorrect = !inputAnswers.Except(correctAnswer).Any();
+                    isCorrect = !inputAnswers.SequenceEqual(correctAnswer);
                 }
 
                 if (isCorrect)

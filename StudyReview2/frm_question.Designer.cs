@@ -84,7 +84,7 @@
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tabPage3);
-            tabControl1.Location = new Point(0, 28);
+            tabControl1.Location = new Point(0, 3);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(761, 393);
@@ -220,9 +220,9 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(765, 424);
-            Controls.Add(tabControl1);
+            ClientSize = new Size(765, 396);
             Controls.Add(toolStrip1);
+            Controls.Add(tabControl1);
             Name = "frm_question";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Let's live a better tomorrow than today";

@@ -21,6 +21,7 @@ namespace StudyReview2
         string JSON_PATH = "";
         int CHECK_ITEM = 0;
         bool PROCESS_EDIT = false;
+        bool isCodeChange = false;
 
         public frm_itemAdd(string path)
         {
@@ -39,6 +40,7 @@ namespace StudyReview2
              * text : 단답식은 문제, 다관식은 [0]은 타이틀 [1]은 문제
              * result : 단답식은 [0] 답 다관식은 [array]
              */
+
             if (File.Exists(JSON_PATH))
             {
                 var jsonData = File.ReadAllText(JSON_PATH);
@@ -130,7 +132,9 @@ namespace StudyReview2
         {
             //CHECK_ITEM = 0;
             list_refresh();
-            //txt_checkItem.Text = "Check Item : none";
+            CHECK_ITEM = -1;
+            txt_checkItem.Text = "Check Item : none";
+
             //이미지 경로 설정
             txt_image.Text = "";
             txt_image2.Text = "";
@@ -139,7 +143,8 @@ namespace StudyReview2
             //문제 초기화
             richBox1.Text = "";
             richBox2.Text = "문제 A의 정답은 {B}입니다. B의 정답은 {C}입니다.";
-            txt_title.Text = "중간에 들어갈 알맞은 답을 적으시오";
+            // txt_title.Text = "중간에 들어갈 알맞은 답을 적으시오";
+            txt_selectItem.Text = $"Selected Items : {listView.Items.Count.ToString()}";
 
             //버튼 활성화 초기화
             btn_add.Enabled = true;
@@ -260,7 +265,7 @@ namespace StudyReview2
             try
             {
                 var exisitQuestions = LoadQuestionsFromJson(JSON_PATH);
-
+                
                 if (CHECK_ITEM < 0 || CHECK_ITEM >= exisitQuestions.Count)
                 {
                     MessageBox.Show("수정할 항목을 찾을 수 없습니다.", "StudyReview 2", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -271,6 +276,12 @@ namespace StudyReview2
 
                 selectedQuestion["text"] = richBox1.Text;
                 selectedQuestion["result"] = txt_input1.Text;
+
+                string imagePath = txt_image.Text;
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    selectedQuestion["image"] = imagePath;
+                }
 
                 var highlightedText = GetHighlightedText(richBox1);
                 if (highlightedText != null && highlightedText.Count > 0)
@@ -293,7 +304,7 @@ namespace StudyReview2
             try
             {
                 var exisitQuestions = LoadQuestionsFromJson(JSON_PATH);
-
+                //MessageBox.Show(CHECK_ITEM.ToString());
                 if (CHECK_ITEM < 0 || CHECK_ITEM >= exisitQuestions.Count)
                 {
                     MessageBox.Show("수정할 항목을 찾을 수 없습니다.", "StudyReview 2", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -309,18 +320,17 @@ namespace StudyReview2
                 if (highlightedText != null && highlightedText.Count > 0)
                 {
                     selectedQuestion["highlightedText"] = highlightedText;
-                    selectedQuestion["result"] = answers;
-
-                    string imagePath = txt_image2.Text;
-                    if (!string.IsNullOrEmpty(imagePath))
-                    {
-                        selectedQuestion["image"] = imagePath;
-                    }
-                    SaveQuestionsToJson(JSON_PATH, exisitQuestions);
-                    list_refresh();
-                    eventReset();
                 }
+                selectedQuestion["result"] = answers;
 
+                string imagePath = txt_image2.Text;
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    selectedQuestion["image"] = imagePath;
+                }
+                SaveQuestionsToJson(JSON_PATH, exisitQuestions);
+                list_refresh();
+                eventReset();
             }
             catch (Exception e)
             {
@@ -421,8 +431,11 @@ namespace StudyReview2
         {
             if (PROCESS_EDIT == true)
             {
+                /*
                 MessageBox.Show("기존에 수정중인 작업을 취소해주세요", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return;*/
+                eventReset();
+                PROCESS_EDIT = false;
             }
             /* 리스트뷰 체크 이벤트 */
             listView.BeginUpdate();
@@ -438,11 +451,13 @@ namespace StudyReview2
             {
                 ListViewItem lvItem = listView.SelectedItems[0];
                 string type = lvItem.SubItems[1].Text;
-
+                CHECK_ITEM = (lvItem.Index);
 
                 if (type == "단답식")
                 {
+                    isCodeChange = true;
                     tabControl1.SelectedIndex = 0;
+                    isCodeChange = false;
                     richBox1.Text = lvItem.SubItems[2].Text;
                     txt_input1.Text = lvItem.SubItems[3].Text;
                     txt_image.Text = lvItem.SubItems[4].Text;
@@ -450,13 +465,14 @@ namespace StudyReview2
                     {
                         highlightedTextSet(richBox1, lvItem.SubItems[5].Text);
                     }
-
                     //도구 관리
                     editBtn_event(lvItem);
                 }
                 else if (type == "다관식")
                 {
+                    isCodeChange = true;
                     tabControl1.SelectedIndex = 1;
+                    isCodeChange = false;
                     string[] questEmpty = lvItem.SubItems[2].Text.Split('|');
                     txt_title.Text = questEmpty[0];
                     richBox2.Text = questEmpty[1];
@@ -471,9 +487,8 @@ namespace StudyReview2
         }
         private void editBtn_event(ListViewItem lvItem)
         {
-            CHECK_ITEM = (lvItem.Index);
             //도구 관리
-            txt_checkItem.Text = "Check Item : " + (lvItem.Index + 1).ToString();
+            txt_checkItem.Text = "Check Item : " + CHECK_ITEM.ToString();
             btn_edit.Enabled = true;
             btn_cancle.Enabled = true;
             btn_add.Enabled = false;
@@ -592,12 +607,12 @@ namespace StudyReview2
         private void tabControl1_Selecting(object sender, TabControlCancelEventArgs e)
         {
             // PROCESS_EDIT이 true면 탭 변경 금지
-            if (PROCESS_EDIT)
+            if (PROCESS_EDIT && isCodeChange == false)
             {
                 MessageBox.Show("편집 중에는 탭을 변경할 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 e.Cancel = true;  // 탭 전환 취소
             }
-            else
+            else if (!PROCESS_EDIT && isCodeChange == false)
             {
                 eventReset();
             }
