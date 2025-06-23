@@ -431,11 +431,11 @@ namespace StudyReview2
         {
             if (PROCESS_EDIT == true)
             {
-                /*
+                
                 MessageBox.Show("기존에 수정중인 작업을 취소해주세요", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;*/
-                eventReset();
-                PROCESS_EDIT = false;
+                return;
+                //eventReset();
+                //PROCESS_EDIT = false;
             }
             /* 리스트뷰 체크 이벤트 */
             listView.BeginUpdate();
@@ -476,6 +476,7 @@ namespace StudyReview2
                     string[] questEmpty = lvItem.SubItems[2].Text.Split('|');
                     txt_title.Text = questEmpty[0];
                     richBox2.Text = questEmpty[1];
+                    txt_image2.Text = lvItem.SubItems[4].Text;
                     if (!string.IsNullOrEmpty(lvItem.SubItems[5].Text))
                     {
                         highlightedTextSet(richBox2, lvItem.SubItems[5].Text);

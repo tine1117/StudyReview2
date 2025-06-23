@@ -278,7 +278,7 @@ namespace StudyReview2
                 }
                 else
                 {
-                    isCorrect = !inputAnswers.SequenceEqual(correctAnswer);
+                    isCorrect = inputAnswers.SequenceEqual(correctAnswer);
                 }
 
                 if (isCorrect)
@@ -294,7 +294,7 @@ namespace StudyReview2
                     NOW_FAILD++;
                     if (NOW_FAILD >= 5)
                     {
-                        MessageBox.Show($"{NOW_FAILD}회 실패. 정답은 < {string.Join(", ", correctAnswer)} > 입니다.", "문제 실패", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"{NOW_FAILD}회 실패. 정답은 < {string.Join(", ", json_answer)} > 입니다.", "문제 실패", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         if (NOW_FAILD == 5)
                         {
                             failQuestions.Add(allQuestions[GAME_INDEX]);
@@ -337,7 +337,7 @@ namespace StudyReview2
                     NOW_FAILD++;
                     if (NOW_FAILD >= 5)
                     {
-                        MessageBox.Show($"{NOW_FAILD}회 실패 정답은 < {answer} > 입니다.", "");
+                        MessageBox.Show($"{NOW_FAILD}회 실패 정답은 < {json_answer} > 입니다.", "");
                         if (NOW_FAILD == 5)
                         {
                             failQuestions.Add(allQuestions[GAME_INDEX]);
